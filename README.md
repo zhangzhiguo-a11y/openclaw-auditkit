@@ -1,7 +1,8 @@
 # OpenClaw AuditKit
 
-OpenClaw AuditKit is a small CLI and JSON packet format for self-evolving tools,
-agent workflows, and CI automation.
+OpenClaw AuditKit is a lightweight audit system for self-evolving tools and agent workflows. Class C never merges,
+Class A auto-merges after audit, and Class B requires agent confirmation after audit. Failed changes are rejected
+until evidence is provided.
 
 It is designed to keep automation moving without turning every unresolved audit
 into a manual bottleneck. AuditKit routes feedback back to the change owner,
