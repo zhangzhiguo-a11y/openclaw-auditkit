@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://openclaw-auditkit.dev/schemas/audit_packet.schema.json",
+  "title": "AuditKit Audit Packet",
+  "type": "object",
+  "required": [
+    "audit_id",
+    "created_at",
+    "owner",
+    "requester",
+    "risk_class",
+    "title",
+    "changed_files",
+    "proposed_action",
+    "rollback",
+    "intent_hash",
+    "evidence",
+    "status"
+  ],
+  "properties": {
+    "audit_id": {
+      "type": "string",
+      "pattern": "^audit-[a-z0-9][a-z0-9-]{4,96}$"
+    },
+    "created_at": { "type": "string" },
+    "owner": { "type": "string", "minLength": 1 },
+    "requester": { "type": "string", "minLength": 1 },
+    "risk_class": { "type": "string", "enum": ["A", "B", "C"] },
+    "title": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string" },
+    "changed_files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "proposed_action": { "type": "string" },
+    "expected_impact": { "type": "string" },
+    "rollback": { "type": "string" },
+    "intent_hash": { "type": "string" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_type", "reference"],
+        "properties": {
+          "source_type": { "type": "string" },
+          "reference": { "type": "string" },
+          "summary": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "approved", "rejected", "needs_evidence", "needs_owner_action", "needs_verification", "defer"]
+    },
+    "review_result": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string" },
+        "reviewer": { "type": "string" },
+        "reviewed_at": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "followup_task": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}
+

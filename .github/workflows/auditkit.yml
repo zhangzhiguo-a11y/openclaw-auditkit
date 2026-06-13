@@ -1,0 +1,48 @@
+name: auditkit
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  auditkit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install AuditKit from this repository
+        run: python -m pip install -e .
+
+      - name: Compute changed files
+        id: files
+        shell: bash
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > /tmp/auditkit-files.txt
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from pathlib import Path
+          files = [line.strip() for line in Path("/tmp/auditkit-files.txt").read_text().splitlines() if line.strip()]
+          print("args=" + " ".join(f"--changed-file={item}" for item in files))
+          PY
+
+      - name: Classify change
+        if: steps.files.outputs.args != ''
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          from openclaw_auditkit.policy import classify_paths
+
+          files = [line.strip() for line in Path("/tmp/auditkit-files.txt").read_text().splitlines() if line.strip()]
+          result = classify_paths(files)
+          print(json.dumps(result.to_dict(), indent=2))
+          if result.risk_class == "C":
+              sys.exit(2)
+          PY
