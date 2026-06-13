@@ -1,14 +1,18 @@
 # OpenClaw AuditKit
 
-OpenClaw AuditKit is a small CLI and JSON packet format for owner-routed review
-loops in self-evolving tools, agent workflows, and CI automation.
+OpenClaw AuditKit is a small CLI and JSON packet format for self-evolving tools,
+agent workflows, and CI automation.
 
-The core idea is simple: when an automated audit says `needs_evidence`,
-`needs_verification`, `defer`, or `rejected`, the feedback goes back to the
-party that proposed the change. Human or maintainer confirmation is reserved for
-approved B-class closeout, not for inventing missing evidence.
+It is designed to keep automation moving without turning every unresolved audit
+into a manual bottleneck. AuditKit routes feedback back to the change owner,
+collects evidence locally, and supports a three-class policy:
 
-No API key is required. The default reviewer is deterministic and conservative.
+- Class C never merges.
+- Class A can auto-merge after audit when evidence and rollback data are present.
+- Class B needs agent confirmation after audit.
+
+Failed changes are rejected until evidence is added. No API key is required.
+The default reviewer is deterministic and conservative.
 
 ## Why This Exists
 
@@ -32,7 +36,7 @@ change -> classify -> audit packet -> evidence -> review
 | Class | Meaning | Default behavior |
 | --- | --- | --- |
 | A | Low-risk files | Audit required, can auto-approve when evidence and rollback exist |
-| B | Source, scripts, workflows, schemas, deploy files | Audit required, owner verification and closeout receipt required |
+| B | Source, scripts, workflows, schemas, deploy files | Audit required, agent confirmation required after audit |
 | C | Secrets, credentials, OAuth, customer files, production data | Rejected or quarantined by default |
 
 ## Install
