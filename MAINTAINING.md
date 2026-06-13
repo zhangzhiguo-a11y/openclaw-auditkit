@@ -49,8 +49,7 @@ auditkit --help
 - SARIF output.
 - Optional model-based reviewer plugin interface.
 - Configurable closeout receipt policy.
-- Automation-loop guidance or helper primitives for systems that run AuditKit
-  on a schedule.
+- Helper primitives for systems that run AuditKit on a schedule.
 
 ## 2026-06-13 Maintenance Note
 
@@ -66,12 +65,11 @@ version of this lesson should be a generic automation-loop pattern, example, or
 small helper that keeps reviewer cooldown separate from non-review progress.
 
 Current repository action:
-- Commit only this maintenance guide and `.gitignore` backup-file ignores.
-- Do not bump the package version for this maintenance-only change.
+- Added public-safe automation-loop documentation in `docs/automation-loop.md`.
+- Do not bump the package version for this docs-only change.
 - Do not change `src/openclaw_auditkit/` until a public-safe automation-loop
-  feature or document is designed.
+  helper is designed.
 
 Next version TODO:
-- Add public-safe automation-loop documentation or helper code showing how to
-  keep reviewer cooldown separate from evidence collection, owner follow-up,
-  status reporting, and closeout checks.
+- Consider helper code that keeps reviewer cooldown separate from evidence
+  collection, owner follow-up, status reporting, and closeout checks.

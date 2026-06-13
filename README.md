@@ -32,6 +32,11 @@ change -> classify -> audit packet -> evidence -> review
        -> approved closeout or rejected/quarantined
 ```
 
+For scheduled systems, see [Automation Loop Pattern](docs/automation-loop.md).
+The short version: reviewer cooldown should pause reviewer calls only, while
+local evidence collection, owner follow-up, status reporting, and closeout
+checks continue.
+
 ## Risk Classes
 
 | Class | Meaning | Default behavior |
