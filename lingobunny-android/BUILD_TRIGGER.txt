@@ -1,0 +1,1 @@
+Build trigger for Lingo Bunny Android web shell V1.5.2.
