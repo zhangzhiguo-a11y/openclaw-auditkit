@@ -1,0 +1,29 @@
+name: Build Lingo Bunny Android Web Shell
+
+on:
+  push:
+    paths:
+      - 'lingobunny-android/**'
+      - '.github/workflows/build-lingobunny-webshell.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Build unsigned release APK
+        working-directory: lingobunny-android
+        run: gradle :app:assembleRelease --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lingobunny-webshell-unsigned
+          path: lingobunny-android/app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+          retention-days: 3
