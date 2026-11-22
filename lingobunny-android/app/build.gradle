@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.lingobunny.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.lingobunny.app'
+        minSdk 26
+        targetSdk 35
+        versionCode 15200
+        versionName '1.5.2'
+    }
+}
