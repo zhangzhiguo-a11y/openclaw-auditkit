@@ -5,6 +5,10 @@ on:
     paths:
       - 'lingobunny-android/**'
       - '.github/workflows/build-lingobunny-webshell.yml'
+  pull_request:
+    paths:
+      - 'lingobunny-android/**'
+      - '.github/workflows/build-lingobunny-webshell.yml'
 
 jobs:
   build:
