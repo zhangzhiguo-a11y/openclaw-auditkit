@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>小兔英语岛 · 手机在线诊断</title><style>
+:root{font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;color:#273548;background:#f5f9ff}body{margin:0;padding:20px 14px}main{max-width:670px;margin:auto}h1{font-size:23px;margin:6px 0 8px}p{line-height:1.65;color:#45556b}section{background:white;border:1px solid #dfe9f7;border-radius:12px;padding:14px;margin-top:12px}h2{font-size:16px;margin:0 0 8px}.state{font-weight:700}.ok{color:#087b48}.error{color:#b33232}.warn{color:#9c6911}pre{white-space:pre-wrap;word-break:break-word;margin:8px 0 0;font-size:12px;color:#53657b;background:#f7f9fd;padding:9px;border-radius:6px}button{border:0;background:#2169ca;color:#fff;padding:12px 18px;border-radius:8px;font-size:15px;margin-top:14px}button:disabled{opacity:.65}small{color:#63728a}#results section{border-left:4px solid #b4c7df}#results section.ok-section{border-left-color:#0b9051}#results section.error-section{border-left-color:#be3e3e}</style></head>
+<body><main><h1>🐰 手机在线功能诊断</h1><p>只发送虚构测试凭据，不会登录孩子档案、修改课程或产生在线小伙伴。请在**出现 Failed to fetch 的那部手机、同一个浏览器**打开。</p>
+<section><h2>当前网页环境</h2><pre id="env">检查中…</pre></section>
+<button id="run" type="button">重新检测</button><div id="results"></div>
+<p><small>请把下面每项的结果和错误文字截屏给我。诊断不会读取学习进度、同步码、PIN 或孩子姓名。</small></p></main>
+<script>
+(function(){
+ 'use strict';
+ var host='https://lingo.bestresources.cn',r=document.getElementById('results'),btn=document.getElementById('run');
+ var sw='不支持';try{if(navigator.serviceWorker)sw=navigator.serviceWorker.controller?'已被 Service Worker 控制':'未被 Service Worker 控制'}catch(e){}
+ var origin='';try{origin=location.origin||'(无标准 origin)'}catch(e){}
+ document.getElementById('env').textContent='页面地址：'+location.href+'\n页面来源：'+origin+'\n网络标志：'+(navigator.onLine?'online':'offline')+'\nService Worker：'+sw+'\n浏览器：'+navigator.userAgent;
+ function report(title,status,detail){var n=document.createElement('section');n.className=status==='PASS'?'ok-section':status==='FAIL'?'error-section':'';n.innerHTML='<h2></h2><div class="state"></div><pre></pre>';n.querySelector('h2').textContent=title;n.querySelector('.state').textContent=status;n.querySelector('.state').className='state '+(status==='PASS'?'ok':status==='FAIL'?'error':'warn');n.querySelector('pre').textContent=detail||'';r.appendChild(n)}
+ function request(url,method,headers,body){
+  return new Promise(function(resolve){var done=false;var xhr=new XMLHttpRequest();var timer=setTimeout(function(){if(done)return;done=true;try{xhr.abort()}catch(e){}resolve({kind:'timeout',detail:'超过12秒未完成；可能是网络、DNS、TLS或代理阻断'})},12000);
+   function finish(res){if(done)return;done=true;clearTimeout(timer);resolve(res)}
+   try{xhr.open(method,url,true);xhr.timeout=11000;Object.keys(headers||{}).forEach(function(k){xhr.setRequestHeader(k,headers[k])});xhr.onload=function(){finish({kind:'http',status:xhr.status,text:(xhr.responseText||'').slice(0,350),type:xhr.getResponseHeader('content-type')||''})};xhr.onerror=function(){finish({kind:'network',detail:'浏览器网络错误（可能含跨域/证书/代理阻断）'})};xhr.ontimeout=function(){finish({kind:'timeout',detail:'请求超过11秒'})};xhr.send(body||null)}catch(e){finish({kind:'exception',detail:String(e)})}
+  })
+ }
+ async function run(){btn.disabled=true;r.textContent='';report('诊断启动','RUNNING','检测网页静态资源、同源社交接口和公网社交接口');
+ var tests=[
+  {name:'A. 当前站点静态脚本 GET',url:'./social-v151.js?diagnostic='+Date.now(),method:'GET',expected:function(o){return o.kind==='http'&&o.status===200}},
+  {name:'B. 当前来源社交 POST',url:'/api/social/online',method:'POST',body:'{"player_id":"diagnostic-only","secret":"invalid"}',headers:{'Content-Type':'application/json'},expected:function(o){return o.kind==='http'&&o.status===401}},
+  {name:'C. 公网域名社交 POST',url:host+'/api/social/online',method:'POST',body:'{"player_id":"diagnostic-only","secret":"invalid"}',headers:{'Content-Type':'application/json'},expected:function(o){return o.kind==='http'&&o.status===401}},
+  {name:'D. 公网域名社交注册预检模拟',url:host+'/api/social/register',method:'OPTIONS',expected:function(o){return o.kind==='http'&&(o.status===204||o.status===200)}}
+ ];
+ for(var i=0;i<tests.length;i++){var t=tests[i],o=await request(t.url,t.method,t.headers,t.body);report(t.name,t.expected(o)?'PASS':'FAIL',t.method+' '+t.url+'\n'+JSON.stringify(o));}
+ btn.disabled=false;
+ }
+ btn.onclick=run;run();
+})();
+</script></body></html>
